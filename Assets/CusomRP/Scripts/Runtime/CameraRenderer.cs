@@ -14,9 +14,15 @@ public class CameraRenderer : MonoBehaviour
         this.context = context;
         this.camera = camera;
 
-
+        Setup();
         DrawVisibleGeometry();
         Submit();
+    }
+
+    void Setup()
+    {
+        //把当前摄像机的信息告诉上下文，这样shader中就可以获取到当前帧下摄像机的信息，比如VP矩阵等
+        context.SetupCameraProperties(camera);
     }
 
     void DrawVisibleGeometry()
