@@ -5,12 +5,18 @@ using UnityEngine.Rendering;
 
 public class CustomRenderPipeline : RenderPipeline
 {
-    //±ØĞëÖØĞ´Renderº¯Êı£¬Ä¿Ç°º¯ÊıÄÚ²¿Ê²Ã´¶¼²»Ö´ĞĞ
+    CameraRenderer renderer = new CameraRenderer();
+
     protected override void Render(ScriptableRenderContext context, Camera[] cameras)
     {
-        /*ÔÚRenderPipelineµÄÊµÀıÖĞ£¬UnityÃ¿Ò»Ö¡¶¼»áÖ´ĞĞÆäRenderº¯Êı£¬
-         * ¸Ãº¯Êı´«ÈëÁËÒ»¸öScriptableRenderContextÀàĞÍµÄcontextÓÃÓÚÁ¬½ÓÒıÇæµ×²ã£¬
-         * ÎÒÃÇÓÃËüÀ´Êµ¼Ê½øĞĞäÖÈ¾£¬´Ö±©À´Ëµ£¬Ã¿Ö¡ÄÚËùÓĞäÖÈ¾Ïà¹ØµÄĞÅÏ¢¶¼´æ·ÅÔÚcontextÖĞ£¬
-         * Í¬Ê±¸Ãº¯Êı´«ÈëÒ»¸öÉãÏñ»úÊı×é£¬ºÜºÃÀí½â£¬ÒâË¼ÊÇÎÒÃÇÒªÔÚµ±Ç°Ö¡°´Ë³ĞòäÖÈ¾ÕâĞ©ÉãÏñ»úÅÄµ½µÄ»­Ãæ¡£*/
+        /*åœ¨RenderPipelineçš„å®ä¾‹ä¸­ï¼ŒUnityæ¯ä¸€å¸§éƒ½ä¼šæ‰§è¡Œå…¶Renderå‡½æ•°ï¼Œ
+         * è¯¥å‡½æ•°ä¼ å…¥äº†ä¸€ä¸ªScriptableRenderContextç±»å‹çš„contextç”¨äºè¿æ¥å¼•æ“åº•å±‚ï¼Œ
+         * æˆ‘ä»¬ç”¨å®ƒæ¥å®é™…è¿›è¡Œæ¸²æŸ“ï¼Œç²—æš´æ¥è¯´ï¼Œæ¯å¸§å†…æ‰€æœ‰æ¸²æŸ“ç›¸å…³çš„ä¿¡æ¯éƒ½å­˜æ”¾åœ¨contextä¸­ï¼Œ
+         * åŒæ—¶è¯¥å‡½æ•°ä¼ å…¥ä¸€ä¸ªæ‘„åƒæœºæ•°ç»„ï¼Œå¾ˆå¥½ç†è§£ï¼Œæ„æ€æ˜¯æˆ‘ä»¬è¦åœ¨å½“å‰å¸§æŒ‰é¡ºåºæ¸²æŸ“è¿™äº›æ‘„åƒæœºæ‹åˆ°çš„ç”»é¢ã€‚*/
+
+        foreach (Camera camera in cameras)
+        {
+            renderer.Render(context, camera);
+        }
     }
 }

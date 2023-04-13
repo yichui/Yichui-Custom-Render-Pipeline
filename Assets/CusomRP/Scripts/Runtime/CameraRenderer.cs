@@ -2,13 +2,13 @@ using UnityEngine;
 using UnityEngine.Rendering;
 public class CameraRenderer : MonoBehaviour
 {
-    //´æ·Åµ±Ç°äÖÈ¾ÉÏÏÂÎÄ
+    //å­˜æ”¾å½“å‰æ¸²æŸ“ä¸Šä¸‹æ–‡
     private ScriptableRenderContext context;
 
-    //´æ·ÅÉãÏñ»úäÖÈ¾Æ÷µ±Ç°Ó¦¸ÃäÖÈ¾µÄÉãÏñ»ú
+    //å­˜æ”¾æ‘„åƒæœºæ¸²æŸ“å™¨å½“å‰åº”è¯¥æ¸²æŸ“çš„æ‘„åƒæœº
     private Camera camera;
 
-    //ÉãÏñ»úäÖÈ¾Æ÷µÄäÖÈ¾º¯Êı£¬ÔÚµ±Ç°äÖÈ¾ÉÏÏÂÎÄµÄ»ù´¡ÉÏäÖÈ¾µ±Ç°ÉãÏñ»ú
+    //æ‘„åƒæœºæ¸²æŸ“å™¨çš„æ¸²æŸ“å‡½æ•°ï¼Œåœ¨å½“å‰æ¸²æŸ“ä¸Šä¸‹æ–‡çš„åŸºç¡€ä¸Šæ¸²æŸ“å½“å‰æ‘„åƒæœº
     public void Render(ScriptableRenderContext context, Camera camera)
     {
         this.context = context;
@@ -21,13 +21,13 @@ public class CameraRenderer : MonoBehaviour
 
     void DrawVisibleGeometry()
     {
-        //Ìí¼Ó¡°»æÖÆÌì¿ÕºĞ¡±Ö¸Áî£¬DrawSkyboxÎªScriptableRenderContextÏÂÒÑÓĞº¯Êı£¬ÕâÀï¾ÍÌåÏÖÁËÎªÊ²Ã´ËµUnityÒÑ¾­°ïÎÒÃÇ·â×°ºÃÁËºÜ¶àÎÒÃÇÒªÓÃµ½µÄº¯Êı£¬SPRµÄ»­±Ê~
+        //æ·»åŠ â€œç»˜åˆ¶å¤©ç©ºç›’â€æŒ‡ä»¤ï¼ŒDrawSkyboxä¸ºScriptableRenderContextä¸‹å·²æœ‰å‡½æ•°ï¼Œè¿™é‡Œå°±ä½“ç°äº†ä¸ºä»€ä¹ˆè¯´Unityå·²ç»å¸®æˆ‘ä»¬å°è£…å¥½äº†å¾ˆå¤šæˆ‘ä»¬è¦ç”¨åˆ°çš„å‡½æ•°ï¼ŒSPRçš„ç”»ç¬”~
         context.DrawSkybox(camera);
     }
 
     void Submit()
     {
-        //Ìá½»µ±Ç°ÉÏÏÂÎÄÖĞ»º´æµÄÖ¸Áî¶ÓÁĞ£¬Ö´ĞĞÖ¸Áî¶ÓÁĞ
+        //æäº¤å½“å‰ä¸Šä¸‹æ–‡ä¸­ç¼“å­˜çš„æŒ‡ä»¤é˜Ÿåˆ—ï¼Œæ‰§è¡ŒæŒ‡ä»¤é˜Ÿåˆ—
         context.Submit();
     }
 }

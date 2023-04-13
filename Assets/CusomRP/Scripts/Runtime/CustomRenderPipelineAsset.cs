@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 [CreateAssetMenu(menuName = "Rendering/Custom Render Pipeline")]
 public class CustomRenderPipelineAsset : RenderPipelineAsset
 {
-    //ÖØĞ´´´½¨Êµ¼ÊRenderPipelineµÄº¯Êı
+    //é‡å†™åˆ›å»ºå®é™…RenderPipelineçš„å‡½æ•°
     protected override RenderPipeline CreatePipeline()
     {
         return new CustomRenderPipeline();
