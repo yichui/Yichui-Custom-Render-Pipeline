@@ -13,5 +13,21 @@ public class CameraRenderer : MonoBehaviour
     {
         this.context = context;
         this.camera = camera;
+
+
+        DrawVisibleGeometry();
+        Submit();
+    }
+
+    void DrawVisibleGeometry()
+    {
+        //添加“绘制天空盒”指令，DrawSkybox为ScriptableRenderContext下已有函数，这里就体现了为什么说Unity已经帮我们封装好了很多我们要用到的函数，SPR的画笔~
+        context.DrawSkybox(camera);
+    }
+
+    void Submit()
+    {
+        //提交当前上下文中缓存的指令队列，执行指令队列
+        context.Submit();
     }
 }
