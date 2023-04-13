@@ -22,7 +22,9 @@ public class CameraRenderer : MonoBehaviour
         this.camera = camera;
 
         Setup();
+
         DrawVisibleGeometry();
+        
         Submit();
     }
 
