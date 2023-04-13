@@ -9,7 +9,6 @@ public class CustomRenderPipelineAsset : RenderPipelineAsset
     //重写创建实际RenderPipeline的函数
     protected override RenderPipeline CreatePipeline()
     {
-        //暂时返回null
-        return null;
+        return new CustomRenderPipeline();
     }
 }
