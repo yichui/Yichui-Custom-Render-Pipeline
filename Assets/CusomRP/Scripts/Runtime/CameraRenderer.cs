@@ -15,11 +15,19 @@ public class CameraRenderer : MonoBehaviour
         name = bufferName
     };
 
+    CullingResults cullingResults;
+
     //摄像机渲染器的渲染函数，在当前渲染上下文的基础上渲染当前摄像机
     public void Render(ScriptableRenderContext context, Camera camera)
     {
         this.context = context;
         this.camera = camera;
+
+
+        if (!Cull())
+        {
+            return;
+        }
 
         Setup();
 
@@ -85,5 +93,21 @@ public class CameraRenderer : MonoBehaviour
         //我们默认在CommandBuffer执行之后要立刻清空它，如果我们想要重用CommandBuffer，需要针对它再单独操作（不使用ExecuteBuffer），舒服的方法给常用的操作~
         context.ExecuteCommandBuffer(buffer);
         buffer.Clear();
+    }
+
+
+    /// <summary>
+    /// 剔除
+    /// </summary>
+    /// <returns></returns>
+    bool Cull()
+    {
+        if (camera.TryGetCullingParameters(out ScriptableCullingParameters p))
+        {
+            //去除掉所有处于摄像机视锥体外的物体
+            cullingResults = context.Cull(ref p);
+            return true;
+        }
+        return false;
     }
 }
