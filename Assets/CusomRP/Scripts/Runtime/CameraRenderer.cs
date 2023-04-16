@@ -90,6 +90,9 @@ public class CameraRenderer : MonoBehaviour
 
         //添加“绘制天空盒”指令，DrawSkybox为ScriptableRenderContext下已有函数，这里就体现了为什么说Unity已经帮我们封装好了很多我们要用到的函数，SPR的画笔~
         context.DrawSkybox(camera);
+
+        //test 
+        context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
     }
 
     void Submit()
