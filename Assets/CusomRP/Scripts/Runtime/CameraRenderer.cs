@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
-public class CameraRenderer : MonoBehaviour
+public partial class CameraRenderer : MonoBehaviour
 {
     //存放当前渲染上下文
     private ScriptableRenderContext context;
@@ -19,17 +19,7 @@ public class CameraRenderer : MonoBehaviour
 
     static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
 
-    static ShaderTagId[] legacyShaderTagIds = {
-        new ShaderTagId("Always"),
-        new ShaderTagId("ForwardBase"),
-        new ShaderTagId("PrepassBase"),
-        new ShaderTagId("Vertex"),
-        new ShaderTagId("VertexLMRGBM"),
-        new ShaderTagId("VertexLM")
-    };
-
-    static Material errorMaterial;
-
+   
     //摄像机渲染器的渲染函数，在当前渲染上下文的基础上渲染当前摄像机
     public void Render(ScriptableRenderContext context, Camera camera)
     {
@@ -112,28 +102,6 @@ public class CameraRenderer : MonoBehaviour
         context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
     }
 
-    void DrawUnsupportedShaders()
-    {
-        //获取Error材质
-        if (errorMaterial == null)
-        {
-            errorMaterial = new Material(Shader.Find("Hidden/InternalErrorShader"));
-        }
-        //绘制走不支持的Shader Pass的物体
-        var drawingSettings = new DrawingSettings(legacyShaderTagIds[0], new SortingSettings(camera))
-        {
-            //设置覆写的材质
-            overrideMaterial = errorMaterial
-        };
-
-        //设置更多在此次DrawCall中要渲染的ShaderPass，也就是不支持的ShaderPass
-        for (int i = 1; i < legacyShaderTagIds.Length; i++)
-        {
-            drawingSettings.SetShaderPassName(i, legacyShaderTagIds[i]);
-        }
-        var filteringSettings = FilteringSettings.defaultValue;
-        context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
-    }
 
     void Submit()
     {
