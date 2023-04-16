@@ -36,6 +36,9 @@ public partial class CameraRenderer : MonoBehaviour
 
         DrawVisibleGeometry();
         DrawUnsupportedShaders();
+
+        DrawGizmos();
+
         Submit();
     }
 

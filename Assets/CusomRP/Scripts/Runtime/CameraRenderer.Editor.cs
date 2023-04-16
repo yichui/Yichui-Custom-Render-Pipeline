@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.Rendering;
-
+using UnityEditor;
 public partial class CameraRenderer
 {
+	partial void DrawGizmos();
+
 	//定义分部函数的方式类似C++
 	partial void DrawUnsupportedShaders();
 	//这块代码只会在Editor下起作用
@@ -20,7 +22,19 @@ public partial class CameraRenderer
 
 	//Error Material
 	private static Material errorMaterial;
-	partial void DrawUnsupportedShaders()
+
+
+
+    partial void DrawGizmos()
+    {
+        if (Handles.ShouldRenderGizmos())
+        {
+            context.DrawGizmos(camera, GizmoSubset.PreImageEffects);
+            context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
+        }
+    }
+
+    partial void DrawUnsupportedShaders()
 	{
 		//获取Error材质
 		if (errorMaterial == null)
