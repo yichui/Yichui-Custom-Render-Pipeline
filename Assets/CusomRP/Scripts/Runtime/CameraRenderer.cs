@@ -17,6 +17,8 @@ public class CameraRenderer : MonoBehaviour
 
     CullingResults cullingResults;
 
+    static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
+
     //摄像机渲染器的渲染函数，在当前渲染上下文的基础上渲染当前摄像机
     public void Render(ScriptableRenderContext context, Camera camera)
     {
@@ -74,6 +76,18 @@ public class CameraRenderer : MonoBehaviour
 
     void DrawVisibleGeometry()
     {
+        //决定物体绘制顺序是正交排序还是基于深度排序的配置
+        var sortingSettings = new SortingSettings(camera)
+        {
+            criteria = SortingCriteria.CommonOpaque
+        };
+        //决定摄像机支持的Shader Pass和绘制顺序等的配置
+        var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings);
+        //决定过滤哪些Visible Objects的配置，包括支持的RenderQueue等
+        var filteringSettings = new FilteringSettings(RenderQueueRange.all);
+        //渲染CullingResults内的VisibleObjects
+        context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
+
         //添加“绘制天空盒”指令，DrawSkybox为ScriptableRenderContext下已有函数，这里就体现了为什么说Unity已经帮我们封装好了很多我们要用到的函数，SPR的画笔~
         context.DrawSkybox(camera);
     }
@@ -110,4 +124,5 @@ public class CameraRenderer : MonoBehaviour
         }
         return false;
     }
+
 }
