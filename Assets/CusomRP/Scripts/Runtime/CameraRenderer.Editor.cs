@@ -7,8 +7,14 @@ public partial class CameraRenderer
 
 	//定义分部函数的方式类似C++
 	partial void DrawUnsupportedShaders();
+
+    partial void PrepareForSceneWindow();
+
+	partial void PrepareBuffer();
+
+
 	//这块代码只会在Editor下起作用
-	#if UNITY_EDITOR
+#if UNITY_EDITOR
 	//获取Unity默认的shader tag id
 	private static ShaderTagId[] legacyShaderTagIds =
 	{
@@ -24,8 +30,7 @@ public partial class CameraRenderer
 	private static Material errorMaterial;
 
 
-
-    partial void DrawGizmos()
+	partial void DrawGizmos()
     {
         if (Handles.ShouldRenderGizmos())
         {
@@ -56,5 +61,19 @@ public partial class CameraRenderer
 		var filteringSettings = FilteringSettings.defaultValue;
 		context.DrawRenderers(cullingResults, ref drawingSettings, ref  filteringSettings);
 	}
-	#endif
+
+    partial void PrepareForSceneWindow()
+    {
+        if (camera.cameraType == CameraType.SceneView)
+        {
+            ScriptableRenderContext.EmitWorldGeometryForSceneView(camera);
+        }
+    }
+
+    partial void PrepareBuffer()
+    {
+        //对每个摄像机使用不同的Sample Name
+        buffer.name = camera.name;
+    }
+#endif
 }

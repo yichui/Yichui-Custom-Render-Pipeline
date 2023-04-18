@@ -26,7 +26,8 @@ public partial class CameraRenderer : MonoBehaviour
         this.context = context;
         this.camera = camera;
 
-
+        PrepareBuffer();
+        PrepareForSceneWindow();
         if (!Cull())
         {
             return;
