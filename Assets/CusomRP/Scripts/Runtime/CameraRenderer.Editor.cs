@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEditor;
+using UnityEngine.Profiling;
+
 public partial class CameraRenderer
 {
 	partial void DrawGizmos();
@@ -29,6 +31,7 @@ public partial class CameraRenderer
 	//Error Material
 	private static Material errorMaterial;
 
+	string SampleName { get; set; }
 
 	partial void DrawGizmos()
     {
@@ -72,8 +75,12 @@ public partial class CameraRenderer
 
     partial void PrepareBuffer()
     {
+        Profiler.BeginSample("Editor Only");
         //对每个摄像机使用不同的Sample Name
-        buffer.name = camera.name;
+        buffer.name = SampleName = camera.name;
+        Profiler.EndSample();
     }
+#else
+	string SampleName => bufferName;
 #endif
 }
