@@ -1,9 +1,14 @@
-//´æ´¢ShaderÖÐµÄÒ»Ð©³£ÓÃµÄÊäÈëÊý¾Ý
+//å­˜å‚¨Shaderä¸­çš„ä¸€äº›å¸¸ç”¨çš„è¾“å…¥æ•°æ®
 #ifndef CUSTOM_UNITY_INPUT_INCLUDED
 #define CUSTOM_UNITY_INPUT_INCLUDED
 
-float4x4 unity_ObjectToWorld;//ÄÚÖÃ×ÅÉ«Æ÷±äÁ¿,HLSLPROGRAMÖÐÐèÒªÎÒÃÇ×Ô¼ºÉùÃ÷Ò»Ð©»ñÈ¡ÄÚÖÃ×ÅÉ«Æ÷±äÁ¿
+float4x4 unity_ObjectToWorld;//å†…ç½®ç€è‰²å™¨å˜é‡,HLSLPROGRAMä¸­éœ€è¦æˆ‘ä»¬è‡ªå·±å£°æ˜Žä¸€äº›èŽ·å–å†…ç½®ç€è‰²å™¨å˜é‡
+float4x4 unity_WorldToObject;
+float4x4 unity_MatrixVP;//å†…ç½®ç€è‰²å™¨å˜é‡,HLSLPROGRAMä¸­éœ€è¦æˆ‘ä»¬è‡ªå·±å£°æ˜Žä¸€äº›èŽ·å–å†…ç½®ç€è‰²å™¨å˜é‡
 
-float4x4 unity_MatrixVP;//ÄÚÖÃ×ÅÉ«Æ÷±äÁ¿,HLSLPROGRAMÖÐÐèÒªÎÒÃÇ×Ô¼ºÉùÃ÷Ò»Ð©»ñÈ¡ÄÚÖÃ×ÅÉ«Æ÷±äÁ¿
+real4 unity_WorldTransformParams;
+
+float4x4 unity_MatrixV;
+float4x4 glstate_matrix_projection;
 
 #endif
