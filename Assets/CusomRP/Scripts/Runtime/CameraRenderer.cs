@@ -21,7 +21,7 @@ public partial class CameraRenderer : MonoBehaviour
 
    
     //摄像机渲染器的渲染函数，在当前渲染上下文的基础上渲染当前摄像机
-    public void Render(ScriptableRenderContext context, Camera camera)
+    public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useGPUInstancing)
     {
         this.context = context;
         this.camera = camera;
@@ -35,7 +35,7 @@ public partial class CameraRenderer : MonoBehaviour
 
         Setup();
 
-        DrawVisibleGeometry();
+        DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
         DrawUnsupportedShaders();
 
         DrawGizmos();
@@ -92,7 +92,7 @@ public partial class CameraRenderer : MonoBehaviour
         ExecuteBuffer();
     }
 
-    void DrawVisibleGeometry()
+    void DrawVisibleGeometry(bool useDynamicBatching, bool useGPUInstancing)
     {
         //决定物体绘制顺序是正交排序还是基于深度排序的配置
         var sortingSettings = new SortingSettings(camera)
@@ -101,7 +101,11 @@ public partial class CameraRenderer : MonoBehaviour
             criteria = SortingCriteria.CommonOpaque
         };
         //决定摄像机支持的Shader Pass和绘制顺序等的配置
-        var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings);
+        var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings)
+        {
+            enableDynamicBatching = useDynamicBatching,//开启动态合批
+            enableInstancing = useGPUInstancing
+        };
         //决定过滤哪些Visible Objects的配置，包括支持的RenderQueue等
         var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
         //渲染CullingResults内不透明的VisibleObjects
