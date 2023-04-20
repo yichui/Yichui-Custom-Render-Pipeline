@@ -6,7 +6,10 @@ using UnityEngine.Rendering;
 public class CustomRenderPipeline : RenderPipeline
 {
     CameraRenderer renderer = new CameraRenderer();
-
+    public CustomRenderPipeline()
+    {
+        GraphicsSettings.useScriptableRenderPipelineBatching = true;
+    }
     protected override void Render(ScriptableRenderContext context, Camera[] cameras)
     {
         /*在RenderPipeline的实例中，Unity每一帧都会执行其Render函数，

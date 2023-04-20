@@ -2,7 +2,6 @@
 #ifndef CUSTOM_UNITY_INPUT_INCLUDED
 #define CUSTOM_UNITY_INPUT_INCLUDED
 
-
 //这三个变量也使用CBUFFER，使用UnityPerDraw命名该Buffer（UnityPerDraw为Unity内置好的名字）
 CBUFFER_START(UnityPerDraw)
 float4x4 unity_ObjectToWorld;//内置着色器变量,HLSLPROGRAM中需要我们自己声明一些获取内置着色器变量
@@ -13,10 +12,8 @@ float4 unity_LODFade;
 real4 unity_WorldTransformParams;
 CBUFFER_END
 
-
-float4x4 unity_MatrixV;
-float4x4 unity_MatrixVP;//内置着色器变量,HLSLPROGRAM中需要我们自己声明一些获取内置着色器变量
-
+float4x4 unity_MatrixVP;
+float4x4 unity_MatrixV;//内置着色器变量,HLSLPROGRAM中需要我们自己声明一些获取内置着色器变量
 float4x4 glstate_matrix_projection;
 
 #endif
