@@ -36,6 +36,8 @@ Shader "Custom RP/Lit"
             ZWrite [_ZWrite]
 
             HLSLPROGRAM
+            //不生成OpenGL ES 2.0等图形API的着色器变体，其不支持可变次数的循环与线性颜色空间
+            #pragma target 3.5
             //这一指令会让Unity生成两个该Shader的变体，一个支持GPU Instancing，另一个不支持。
             #pragma multi_compile_instancing
 

@@ -19,8 +19,15 @@ float3 GetLighting(Surface surface,Light light)
 //GetLighting返回光照结果，这个GetLighting只传入一个surface
 float3 GetLighting(Surface surface)
 {
-     //光源从Light.hlsl的GetDirectionalLight获取
-    return GetLighting(surface,GetDirectionalLight());
+    //  //光源从Light.hlsl的GetDirectionalLight获取
+    // return GetLighting(surface,GetDirectionalLight());
+    //使用循环，累积所有有效方向光源的光照计算结果
+    float3 color = 0.0;
+    for(int i = 0; i < GetDirectionalLightCount(); i++)
+    {
+        color += GetLighting(surface, GetDirectionalLight(i));
+    }
+    return color;
 }
 
 
