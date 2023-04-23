@@ -3,15 +3,25 @@
 #ifndef CUSTOM_LIGHTING_INCLUDE
 #define CUSTON_LIGHTING_INCLUDE
 
-//第一次写的时候这里的Surface会标红，因为只看这一个hlsl文件，我们并未定义Surface
-//但在include到整个Lit.shader中后，编译会正常，至于IDE还标不标红就看IDE造化了...
-//另外，我们需要在include该文件之前include Surface.hlsl，因为依赖关系
-//所有的include操作都放在LitPass.hlsl中
+
+//计算物体表面接收到的光能量
+float3 IncomingLight(Surface surface,Light light)
+{
+    return saturate(dot(surface.normal,light.direction)) * light.color;
+}
+
+//新增的GetLighting方法，传入surface和light，返回真正的光照计算结果，即物体表面最终反射出的RGB光能量
+float3 GetLighting(Surface surface,Light light)
+{
+    return IncomingLight(surface,light) * surface.color;
+}
+
+//GetLighting返回光照结果，这个GetLighting只传入一个surface
 float3 GetLighting(Surface surface)
 {
-    //return surface.normal.y;
-    //物体表面接收到的光能量 * 物体表面Albedo（反射率）
-    return surface.normal.y * surface.color;
+     //光源从Light.hlsl的GetDirectionalLight获取
+    return GetLighting(surface,GetDirectionalLight());
 }
+
 
 #endif

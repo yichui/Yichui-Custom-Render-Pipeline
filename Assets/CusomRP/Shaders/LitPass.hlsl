@@ -3,6 +3,7 @@
 
 #include "Common.hlsl"
 #include "Surface.hlsl"
+#include "Light.hlsl"
 #include "Lighting.hlsl"
 
 

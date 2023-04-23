@@ -14,6 +14,8 @@ public partial class CameraRenderer : MonoBehaviour
     {
         name = bufferName
     };
+    
+    Lighting lighting = new Lighting();
 
     CullingResults cullingResults;
 
@@ -35,7 +37,7 @@ public partial class CameraRenderer : MonoBehaviour
         }
 
         Setup();
-
+        lighting.Setup(context);
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
         DrawUnsupportedShaders();
 
