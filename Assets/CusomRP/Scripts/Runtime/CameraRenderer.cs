@@ -18,6 +18,7 @@ public partial class CameraRenderer : MonoBehaviour
     CullingResults cullingResults;
 
     static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
+    static ShaderTagId litShaderTagId = new ShaderTagId("CustomLit");
 
    
     //摄像机渲染器的渲染函数，在当前渲染上下文的基础上渲染当前摄像机
@@ -106,6 +107,8 @@ public partial class CameraRenderer : MonoBehaviour
             enableDynamicBatching = useDynamicBatching,//开启动态合批
             enableInstancing = useGPUInstancing
         };
+        //增加对Lit.shader的绘制支持,index代表本次DrawRenderer中该pass的绘制优先级（0最先绘制）
+        drawingSettings.SetShaderPassName(1, litShaderTagId);
         //决定过滤哪些Visible Objects的配置，包括支持的RenderQueue等
         var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
         //渲染CullingResults内不透明的VisibleObjects
