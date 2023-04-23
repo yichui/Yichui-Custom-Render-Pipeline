@@ -11,6 +11,9 @@ Shader "Custom RP/Lit"
 
         _BaseColor("Color",Color) = (0.5, 0.5, 0.5, 1)
 
+        _Metallic ("Metallic", Range(0, 1)) = 0
+		_Smoothness ("Smoothness", Range(0, 1)) = 0.5
+
         //混合模式使用的值，其值应该是枚举值，但是这里使用float
         //特性用于在Editor下更方便编辑
         [Enum(UnityEngine.Rendering.BlendMode)]_SrcBlend("Src Blend",Float) = 1

@@ -12,6 +12,10 @@ struct Surface
     float3 color;
     //透明度
     float alpha;
+
+    float metallic;
+    
+	float smoothness;
 };
 
 #endif

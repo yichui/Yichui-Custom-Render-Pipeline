@@ -4,6 +4,7 @@
 #include "Common.hlsl"
 #include "Surface.hlsl"
 #include "Light.hlsl"
+#include "BRDF.hlsl"
 #include "Lighting.hlsl"
 
 
@@ -24,6 +25,8 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 UNITY_DEFINE_INSTANCED_PROP(float4,_BaseMap_ST)
 //_BaseColor在数组中的定义格式
 UNITY_DEFINE_INSTANCED_PROP(float4,_BaseColor)
+UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
+UNITY_DEFINE_INSTANCED_PROP(float, _Smoothness)
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 //使用结构体定义顶点着色器的输入，一个是为了代码更整洁，一个是为了支持GPU Instancing（获取object的index）
@@ -94,9 +97,12 @@ float4 LitPassFragment(Varyings input) : SV_TARGET
     surface.normal = normalize(input.normalWS);
     surface.color = base.rgb;
     surface.alpha = base.a;
-
+    surface.metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Metallic);
+	surface.smoothness = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Smoothness);
+		
     // return float4(surface.color,surface.alpha);
-    float3 color = GetLighting(surface);
+    BRDF brdf = GetBRDF(surface);
+    float3 color = GetLighting(surface, brdf);
 	return float4(color, surface.alpha);
 }
 
