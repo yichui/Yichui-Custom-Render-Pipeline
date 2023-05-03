@@ -56,4 +56,7 @@ Shader "Custom RP/Lit"
             ENDHLSL
         }
     }
+
+    //告诉Unity编辑器使用CustomShaderGUI类的一个实例来为使用Lit.shader的材质绘制Inspector窗口
+    CustomEditor "CustomShaderGUI"
 }
