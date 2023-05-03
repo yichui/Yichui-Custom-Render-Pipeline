@@ -22,7 +22,7 @@ float OneMinusReflectivity(float metallic)
     return range - metallic * range;
 }
 
-BRDF GetBRDF(Surface surface)
+BRDF GetBRDF(Surface surface, bool applyAlphaToDiffuse = false)
 {
     // BRDF brdf;
     // //diffuse等于物体表面反射的光能量color
@@ -37,6 +37,9 @@ BRDF GetBRDF(Surface surface)
     float oneMinusReflectivity = OneMinusReflectivity(surface.metallic);//1.0 - surface.metallic;
     //diffuse等于物体表面不吸收的光能量color*（1-高光反射率）
     brdf.diffuse = surface.color * oneMinusReflectivity;
+    if (applyAlphaToDiffuse) {
+        brdf.diffuse *= surface.alpha;
+    }
     // //暂时使用固定值
     // brdf.specular = 0.0;
     //高光占比(specular)应该等于surface.color(物体不吸收的光能量，即用于反射的所有光能量)-brdf.diffuse（漫反射占比）
@@ -56,5 +59,25 @@ BRDF GetBRDF(Surface surface)
 // {
 //     return perceptualRoughness * perceptualRoughness;
 // }
+
+//计算高光强度Specular Strength
+float SpecularStrength(Surface surface, BRDF brdf, Light light)
+{
+    //SafeNormalize防止观察方向与物体表面法线完全反向时，其相加结果为0向量导致归一化时除以0
+    float3 h = SafeNormalize(light.direction + surface.viewDirection);
+    float nh2 = Square(saturate(dot(surface.normal,h)));
+    float lh2 = Square(saturate(dot(light.direction,h)));
+    float r2 = Square(brdf.roughness);
+    float d2 = Square(nh2 * (r2 - 1.0) + 1.0001);
+    float normalization = brdf.roughness * 4.0 + 2.0;
+    return r2 / (d2 * max(0.1,lh2) * normalization);
+}
+
+//计算反射出的总光能量比例（漫反射+高光）
+float3 DirectBRDF(Surface surface,BRDF brdf, Light light)
+{
+    //观察角度接收到的高光能量 * 物体表面反射出的高光能量 + 各向均匀的漫反射能量
+    return SpecularStrength(surface,brdf,light) * brdf.specular + brdf.diffuse;
+}
 
 #endif

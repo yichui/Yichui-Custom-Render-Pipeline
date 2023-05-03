@@ -23,6 +23,8 @@ Shader "Custom RP/Lit"
 
         //Clip的Shader关键字，启用该Toggle会将_Clipping关键字添加到该材质活动关键字列表中，而禁用该Toggle会将其删除
         [Toggle(_CLIPPING)] _Clipping("Alpha Clipping",Float) = 0
+
+        [Toggle(_PREMULTIPLY_ALPHA)] _PremulAlpha ("Premultiply Alpha", Float) = 0
     }
 
     SubShader
@@ -48,7 +50,7 @@ Shader "Custom RP/Lit"
             #pragma fragment LitPassFragment
             //告诉Unity启用_CLIPPING关键字时编译不同版本的Shader
             #pragma shader_feature _CLIPPING
-
+            #pragma shader_feature _PREMULTIPLY_ALPHA
 
             #include "LitPass.hlsl"
             ENDHLSL
