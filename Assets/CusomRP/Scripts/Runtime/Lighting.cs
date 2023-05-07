@@ -25,19 +25,23 @@ public class Lighting
     private static Vector4[] dirLightColors = new Vector4[maxDirLightCount];
     private static Vector4[] dirLightDirections = new Vector4[maxDirLightCount];
 
+    Shadows shadows = new Shadows();
+
     private CommandBuffer buffer = new CommandBuffer()
     {
         name = bufferName
     };
 
     //传入参数context用于注入CmmandBuffer指令，cullingResults用于获取当前有效的光源信息
-    public void Setup(ScriptableRenderContext context, CullingResults cullingResults)
+    public void Setup(ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings shadowSettings)
     {
         this.cullingResults = cullingResults;
 
         //对于传递光源数据到GPU的这一过程，我们可能用不到CommandBuffer下的指令（其实用到了buffer.SetGlobalVector），但我们依然使用它来用于Debug
         buffer.BeginSample(bufferName);
         //SetupDirectionalLight();
+
+        shadows.Setup(context, cullingResults, shadowSettings);
 
         SetupLights();
 

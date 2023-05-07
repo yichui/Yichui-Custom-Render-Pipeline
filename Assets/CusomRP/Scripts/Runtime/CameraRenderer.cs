@@ -24,20 +24,20 @@ public partial class CameraRenderer : MonoBehaviour
 
    
     //摄像机渲染器的渲染函数，在当前渲染上下文的基础上渲染当前摄像机
-    public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useGPUInstancing)
+    public void Render(ScriptableRenderContext context, Camera camera, bool useDynamicBatching, bool useGPUInstancing, ShadowSettings shadowSettings)
     {
         this.context = context;
         this.camera = camera;
 
         PrepareBuffer();
         PrepareForSceneWindow();
-        if (!Cull())
+        if (!Cull(shadowSettings.maxDistance))
         {
             return;
         }
 
         Setup();
-        lighting.Setup(context, cullingResults);
+        lighting.Setup(context, cullingResults, shadowSettings);
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
         DrawUnsupportedShaders();
 
@@ -151,10 +151,12 @@ public partial class CameraRenderer : MonoBehaviour
     /// 剔除
     /// </summary>
     /// <returns></returns>
-    bool Cull()
+    bool Cull(float maxShadowDistance)
     {
         if (camera.TryGetCullingParameters(out ScriptableCullingParameters p))
         {
+           //实际shadowDistance取maxShadowDistance和camera.farClipPlane中较小值
+            p.shadowDistance = Mathf.Min(maxShadowDistance, camera.farClipPlane);
             //去除掉所有处于摄像机视锥体外的物体
             cullingResults = context.Cull(ref p);
             return true;

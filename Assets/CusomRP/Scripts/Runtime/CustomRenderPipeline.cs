@@ -13,12 +13,15 @@ public class CustomRenderPipeline : RenderPipeline
     private bool useGPUInstancing;
     #endregion
 
-    //构造函数，初始化管线的一些属性
-    public CustomRenderPipeline(bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher)
-    {
+    ShadowSettings shadowSettings;
 
+    //构造函数，初始化管线的一些属性
+    public CustomRenderPipeline(bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher, ShadowSettings shadowSettings)
+    {
         this.useDynamicBatching = useDynamicBatching;
         this.useGPUInstancing = useGPUInstancing;
+
+        this.shadowSettings = shadowSettings;
         //配置SRP Batch
         GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
         GraphicsSettings.lightsUseLinearIntensity = true;
@@ -34,7 +37,8 @@ public class CustomRenderPipeline : RenderPipeline
         //按顺序渲染每个摄像机
         foreach (Camera camera in cameras)
         {
-            renderer.Render(context, camera, useDynamicBatching, useGPUInstancing);
+            renderer.Render(context, camera, useDynamicBatching, useGPUInstancing, shadowSettings);
+			
         }
     }
 }
