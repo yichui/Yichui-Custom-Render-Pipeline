@@ -76,21 +76,24 @@ public class Shadows
     //渲染方向光源的Shadow Map到ShadowAtlas上
     void RenderDirectionalShadows () 
     {
-         //Shadow Atlas阴影图集的尺寸，默认为1024
+        //Shadow Atlas阴影图集的尺寸，默认为1024
         int atlasSize = (int)settings.directional.atlasSize;
+        
         //使用CommandBuffer.GetTemporaryRT来申请一张RT用于Shadow Atlas，注意我们每帧自己管理其释放
         //第一个参数为该RT的标识，第二个参数为RT的宽，第三个参数为RT的高
         //第四个参数为depthBuffer的位宽，第五个参数为过滤模式，第六个参数为RT格式
         //我们使用32bits的Float位宽，URP使用的是16bits
-        buffer.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize,
-            32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
+        buffer.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize, 32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
+          
         //告诉GPU接下来操作的RT是ShadowAtlas
         //RenderBufferLoadAction.DontCare意味着在将其设置为RenderTarget之后，我们不关心它的初始状态，不对其进行任何预处理
         //不对其进行任何预处理(在Tile Based的GPU上意味着不需要将RenderBuffer内容加载到区块内存中，从而实现性能提升)
         //RenderBufferStoreAction.Store意味着完成这张RT上的所有渲染指令之后（要切换为下一个RenderTarget时），我们会将其存储到显存中为后续采样使用
         buffer.SetRenderTarget(dirShadowAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+
         //清理ShadowAtlas的DepthBuffer（我们的ShadowAtlas也只有32bits的DepthBuffer）,第一次参数true表示清除DepthBuffer，第二个false表示不清除ColorBuffer
         buffer.ClearRenderTarget(true, false, Color.clear);
+
         ExecuteBuffer();
     }
 
