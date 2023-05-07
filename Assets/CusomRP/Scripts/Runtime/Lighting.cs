@@ -45,6 +45,8 @@ public class Lighting
 
         SetupLights();
 
+        shadows.Render();
+
         buffer.EndSample(bufferName);
         //再次提醒这里只是提交CommandBuffer到Context的指令队列中，只有等到context.Submit()才会真正依次执行指令
         context.ExecuteCommandBuffer(buffer);
@@ -99,4 +101,9 @@ public class Lighting
         buffer.SetGlobalVectorArray(dirLightDirectionsId, dirLightDirections);
     }
 
+
+    public void Cleanup ()
+    {
+		shadows.Cleanup();
+	}
 }

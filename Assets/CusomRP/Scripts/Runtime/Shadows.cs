@@ -33,6 +33,8 @@ public class Shadows
     //当前已配置完毕的方向光源数
     private int ShadowedDirectionalLightCount;
 
+    static int dirShadowAtlasId = Shader.PropertyToID("_DirectionalShadowAtlas");
+
     //每帧执行，用于为light配置shadow altas（shadowMap）上预留一片空间来渲染阴影贴图，同时存储一些其他必要信息
     public void ReserveDirectionalShadows(Light light, int visibleLightIndex)
     {
@@ -57,9 +59,49 @@ public class Shadows
         this.settings = settings;
     }
 
+    //渲染阴影贴图
+    public void Render () {
+		if (ShadowedDirectionalLightCount > 0)
+        {
+            RenderDirectionalShadows();
+        }
+        else
+        {
+            //如果因为某种原因不需要渲染阴影，我们也需要生成一张1x1大小的ShadowAtlas
+            //因为WebGL 2.0下如果某个材质包含ShadowMap但在加载时丢失了ShadowMap会报错
+            buffer.GetTemporaryRT(dirShadowAtlasId, 1, 1, 32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
+        }
+	}
+    
+    //渲染方向光源的Shadow Map到ShadowAtlas上
+    void RenderDirectionalShadows () 
+    {
+         //Shadow Atlas阴影图集的尺寸，默认为1024
+        int atlasSize = (int)settings.directional.atlasSize;
+        //使用CommandBuffer.GetTemporaryRT来申请一张RT用于Shadow Atlas，注意我们每帧自己管理其释放
+        //第一个参数为该RT的标识，第二个参数为RT的宽，第三个参数为RT的高
+        //第四个参数为depthBuffer的位宽，第五个参数为过滤模式，第六个参数为RT格式
+        //我们使用32bits的Float位宽，URP使用的是16bits
+        buffer.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize,
+            32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
+        //告诉GPU接下来操作的RT是ShadowAtlas
+        //RenderBufferLoadAction.DontCare意味着在将其设置为RenderTarget之后，我们不关心它的初始状态，不对其进行任何预处理
+        //不对其进行任何预处理(在Tile Based的GPU上意味着不需要将RenderBuffer内容加载到区块内存中，从而实现性能提升)
+        //RenderBufferStoreAction.Store意味着完成这张RT上的所有渲染指令之后（要切换为下一个RenderTarget时），我们会将其存储到显存中为后续采样使用
+        buffer.SetRenderTarget(dirShadowAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+        //清理ShadowAtlas的DepthBuffer（我们的ShadowAtlas也只有32bits的DepthBuffer）,第一次参数true表示清除DepthBuffer，第二个false表示不清除ColorBuffer
+        buffer.ClearRenderTarget(true, false, Color.clear);
+        ExecuteBuffer();
+    }
+
     void ExecuteBuffer()
     {
         context.ExecuteCommandBuffer(buffer);
         buffer.Clear();
     }
+    //完成因ShadowAtlas所有工作后，释放ShadowAtlas RT
+    public void Cleanup () {
+		buffer.ReleaseTemporaryRT(dirShadowAtlasId);
+		ExecuteBuffer();
+	}
 }

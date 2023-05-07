@@ -43,6 +43,8 @@ public partial class CameraRenderer : MonoBehaviour
 
         DrawGizmos();
 
+        lighting.Cleanup();
+        
         Submit();
     }
 
