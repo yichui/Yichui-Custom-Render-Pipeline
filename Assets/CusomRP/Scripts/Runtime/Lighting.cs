@@ -59,6 +59,8 @@ public class Lighting
         dirLightColors[index] = visibleLight.finalColor;
         //光源方向为光源localToWorldMatrix的第三列，这里也需要取反
         dirLightDirections[index] = -visibleLight.localToWorldMatrix.GetColumn(2);
+
+        shadows.ReserveDirectionalShadows(visibleLight.light, index);
     }
  
     void SetupLights()
