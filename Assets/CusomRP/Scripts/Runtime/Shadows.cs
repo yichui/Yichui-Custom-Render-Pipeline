@@ -78,7 +78,7 @@ public class Shadows
     {
         //Shadow Atlas阴影图集的尺寸，默认为1024
         int atlasSize = (int)settings.directional.atlasSize;
-        
+
         //使用CommandBuffer.GetTemporaryRT来申请一张RT用于Shadow Atlas，注意我们每帧自己管理其释放
         //第一个参数为该RT的标识，第二个参数为RT的宽，第三个参数为RT的高
         //第四个参数为depthBuffer的位宽，第五个参数为过滤模式，第六个参数为RT格式
@@ -93,8 +93,22 @@ public class Shadows
 
         //清理ShadowAtlas的DepthBuffer（我们的ShadowAtlas也只有32bits的DepthBuffer）,第一次参数true表示清除DepthBuffer，第二个false表示不清除ColorBuffer
         buffer.ClearRenderTarget(true, false, Color.clear);
-
+        buffer.BeginSample(bufferName);
         ExecuteBuffer();
+
+        for (int i = 0; i < ShadowedDirectionalLightCount; i++) {
+			RenderDirectionalShadows(i, atlasSize);
+		}
+		
+		buffer.EndSample(bufferName);
+		ExecuteBuffer();
+    }
+
+    void RenderDirectionalShadows (int index, int tileSize) 
+    {
+        ShadowedDirectionalLight light = ShadowedDirectionalLights[index];]
+        //ShadowDrawingSettings用来描述使用哪种splitData渲染哪个阴影光源
+		var shadowSettings = new ShadowDrawingSettings(cullingResults, light.visibleLightIndex);
     }
 
     void ExecuteBuffer()
