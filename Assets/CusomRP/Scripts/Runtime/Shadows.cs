@@ -106,9 +106,24 @@ public class Shadows
 
     void RenderDirectionalShadows (int index, int tileSize) 
     {
+        //获取当前要配置光源的信息
         ShadowedDirectionalLight light = ShadowedDirectionalLights[index];]
         //ShadowDrawingSettings用来描述使用哪种splitData渲染哪个阴影光源
+        //根据cullingResults和当前光源的索引来构造一个ShadowDrawingSettings
 		var shadowSettings = new ShadowDrawingSettings(cullingResults, light.visibleLightIndex);
+        //使用Unity提供的接口来为方向光源计算出其渲染阴影贴图用的VP矩阵和splitData
+        cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(light.visibleLightIndex,
+            0, 1, Vector3.zero,
+            tileSize, 0f,
+            out Matrix4x4 viewMatrix, out Matrix4x4 projectionMatrix, out ShadowSplitData splitData);
+
+        //splitData包括投射阴影物体应该如何被裁剪的信息，我们需要把它传递给shadowSettings
+        shadowSettings.splitData = splitData;
+        //将当前VP矩阵设置为计算出的VP矩阵，准备渲染阴影贴图
+        buffer.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
+        ExecuteBuffer();
+        //使用context.DrawShadows来渲染阴影贴图，其需要传入一个shadowSettings
+        context.DrawShadows(ref shadowSettings);
     }
 
     void ExecuteBuffer()
