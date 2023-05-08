@@ -5,8 +5,8 @@ using UnityEngine.Rendering;
 public class Shadows
 {
     private const string bufferName = "Shadows";
-
-    const int maxShadowedDirectionalLightCount = 1;
+    //支持阴影的方向光源最大数（注意这里，我们可以有多个方向光源，但支持的阴影的最多只有4个）
+    const int maxShadowedDirectionalLightCount = 4;
 
     private CommandBuffer buffer = new CommandBuffer()
     {
@@ -96,8 +96,11 @@ public class Shadows
         buffer.BeginSample(bufferName);
         ExecuteBuffer();
 
+        int split = ShadowedDirectionalLightCount <= 1 ? 1 : 2;
+		int tileSize = atlasSize / split;
+
         for (int i = 0; i < ShadowedDirectionalLightCount; i++) {
-			RenderDirectionalShadows(i, atlasSize);
+			RenderDirectionalShadows(i, split, tileSize);
 		}
 		
 		buffer.EndSample(bufferName);
@@ -109,7 +112,7 @@ public class Shadows
     /// </summary>
     /// <param name="index">光源的索引</param>
     /// <param name="tileSize">该光源在ShadowAtlas上分配的Tile块大小</param>
-    void RenderDirectionalShadows (int index, int tileSize) 
+    void RenderDirectionalShadows (int index, int split, int tileSize) 
     {
         //获取当前要配置光源的信息
         ShadowedDirectionalLight light = ShadowedDirectionalLights[index];
@@ -122,11 +125,26 @@ public class Shadows
             out Matrix4x4 viewMatrix, out Matrix4x4 projectionMatrix, out ShadowSplitData splitData);
         //splitData包括投射阴影物体应该如何被裁剪的信息，我们需要把它传递给shadowSettings
         shadowSettings.splitData = splitData;
+
+        SetTileViewport(index, split, tileSize);
+
         //将当前VP矩阵设置为计算出的VP矩阵，准备渲染阴影贴图
         buffer.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
         ExecuteBuffer();
         //使用context.DrawShadows来渲染阴影贴图，其需要传入一个shadowSettings
         context.DrawShadows(ref shadowSettings);
+    }
+
+    /// <summary>
+    /// 设置当前要渲染的Tile区域
+    /// </summary>
+    /// <param name="index">Tile索引</param>
+    /// <param name="split">Tile一个方向上的总数</param>
+    /// <param name="tileSize">一个Tile的宽度（高度）</param>
+    void SetTileViewport(int index, int split, float tileSize)
+    {
+        Vector2 offset = new Vector2(index % split, index / split);
+        buffer.SetViewport(new Rect(offset.x * tileSize, offset.y * tileSize, tileSize, tileSize));
     }
 
     void ExecuteBuffer()
